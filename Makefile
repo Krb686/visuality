@@ -1,25 +1,30 @@
-CC := g++
-SRCDIR := src
-BUILDDIR := build
-TARGET := bin/visuality
+APP=visuality
+CXX=g++
+CXXFLAGS=-g
+SRCDIR=./src
+OBJDIR=./build
 
-SRCEXT := cpp
-SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFLAGS := -g
-LIB:= -pthread
-INC := -I
+SRCS=$(shell find ./src -maxdepth 1 -type f -name "*.cpp")
+OBJS=$(patsubst src/%.cpp, obj/%.o, $(SRCS))
 
-$(TARGET): $(OBJECTS)
-	@echo " Linking..."
-	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
+all: $(APP)
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
-	@mkdir -p $(BUILDDIR)
-	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+$(APP): $(OBJS)
+	@echo "$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(APP) $(OBJS) $(LDLIBS)"
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(APP) $(OBJS) $(LDLIBS)
+
+depend: .depend
+
+.depend: $(SRCS)
+	rm -f ./.depend
+	$(CXX) $(CXXFLAGS) -MM $^>>./.depend;
 
 clean:
-	@echo " Cleaning...";
-	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
+	echo "$(OBJS)"
+	rm -f $(OBJS)
 
-.PHONY: clean
+dist-clean: clean
+	rm -f *~ .depend
+
+include .depend
+
