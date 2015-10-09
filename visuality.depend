@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1444391133 source:/home/kevin/gitrepos/visuality/src/Parser.cpp
+	<iostream>
+	"../include/Parser.hpp"
+
+1444391092 /home/kevin/gitrepos/visuality/include/Parser.hpp
+
